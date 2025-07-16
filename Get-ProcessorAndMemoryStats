@@ -1,9 +1,12 @@
-$GetComputerInfo     =    Get-ComputerInfo
-$GetProcess          =    Get-Process
-$GetCPU              =    $GetProcess | sort -Descending CPU | select -First 10
-$GetMem              =    $GetProcess | sort -Descending WS | select -First 10
-$OutputLine          =    @()
-$OutputLine          +=   [pscustomobject]@{
+Write-Host "Running diagnostics - this may take up to a minute to finish..."
+$GetComputerInfo    =   Get-ComputerInfo
+$GetProcess =   Get-Process
+$ProcessorLoad      =   "{0:P0}" -f ((Get-Counter '\Processor(_Total)\% Processor Time').CounterSamples[0].CookedValue * .01)
+$MemoryLoad         =   "{0:P0}" -f (1 - ($GetComputerInfo.OsFreePhysicalMemory / $GetComputerInfo.OsTotalVisibleMemorySize))
+$GetCPU = $GetProcess | sort -Descending CPU | select -First 10
+$GetMem = $GetProcess | sort -Descending WS | select -First 10
+$OutputLine     =   @()
+$OutputLine     +=  [pscustomobject]@{
                                     Date                =   Get-Date -Format "MM/dd/yyyy HH:mm:ss"
                                     CompanyID           =   $CompanyID
                                     Computername        =   $Env:COMPUTERNAME
