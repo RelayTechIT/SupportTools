@@ -1,0 +1,38 @@
+$GetComputerInfo     =    Get-ComputerInfo
+$GetProcess          =    Get-Process
+$GetCPU              =    $GetProcess | sort -Descending CPU | select -First 10
+$GetMem              =    $GetProcess | sort -Descending WS | select -First 10
+$OutputLine          =    @()
+$OutputLine          +=   [pscustomobject]@{
+                                    Date                =   Get-Date -Format "MM/dd/yyyy HH:mm:ss"
+                                    CompanyID           =   $CompanyID
+                                    Computername        =   $Env:COMPUTERNAME
+                                    Processor           =   $GetComputerInfo.csprocessors.Name.trim()
+                                    ProcessorLoad       =   $ProcessorLoad
+                                    MemoryVisible       =   $GetComputerInfo.OsTotalVisibleMemorySize
+                                    MemoryLoad          =   $MemoryLoad
+                                    UptimeDays          =   $GetComputerInfo.OsUptime.Days
+                                    CPU1                =   "$($GetCPU[0].ProcessName) $($GetCPU[0].Id) $($GetCPU[0].CPU)"
+                                    CPU2                =   "$($GetCPU[1].ProcessName) $($GetCPU[1].Id) $($GetCPU[1].CPU)"
+                                    CPU3                =   "$($GetCPU[2].ProcessName) $($GetCPU[2].Id) $($GetCPU[2].CPU)"
+                                    CPU4                =   "$($GetCPU[3].ProcessName) $($GetCPU[3].Id) $($GetCPU[3].CPU)"
+                                    CPU5                =   "$($GetCPU[4].ProcessName) $($GetCPU[4].Id) $($GetCPU[4].CPU)"
+                                    CPU6                =   "$($GetCPU[5].ProcessName) $($GetCPU[5].Id) $($GetCPU[5].CPU)"
+                                    CPU7                =   "$($GetCPU[6].ProcessName) $($GetCPU[6].Id) $($GetCPU[6].CPU)"
+                                    CPU8                =   "$($GetCPU[7].ProcessName) $($GetCPU[7].Id) $($GetCPU[7].CPU)"
+                                    CPU9                =   "$($GetCPU[8].ProcessName) $($GetCPU[8].Id) $($GetCPU[8].CPU)"
+                                    CPU10               =   "$($GetCPU[9].ProcessName) $($GetCPU[9].Id) $($GetCPU[9].CPU)"
+                                    MEM1                =   "$($GetMEM[0].ProcessName) $($GetMEM[0].Id) $($GetMEM[0].WS)"
+                                    MEM2                =   "$($GetMEM[1].ProcessName) $($GetMEM[1].Id) $($GetMEM[1].WS)"
+                                    MEM3                =   "$($GetMEM[2].ProcessName) $($GetMEM[2].Id) $($GetMEM[2].WS)"
+                                    MEM4                =   "$($GetMEM[3].ProcessName) $($GetMEM[3].Id) $($GetMEM[3].WS)"
+                                    MEM5                =   "$($GetMEM[4].ProcessName) $($GetMEM[4].Id) $($GetMEM[4].WS)"
+                                    MEM6                =   "$($GetMEM[5].ProcessName) $($GetMEM[5].Id) $($GetMEM[5].WS)"
+                                    MEM7                =   "$($GetMEM[6].ProcessName) $($GetMEM[6].Id) $($GetMEM[6].WS)"
+                                    MEM8                =   "$($GetMEM[7].ProcessName) $($GetMEM[7].Id) $($GetMEM[7].WS)"
+                                    MEM9                =   "$($GetMEM[8].ProcessName) $($GetMEM[8].Id) $($GetMEM[8].WS)"
+                                    MEM10               =   "$($GetMEM[9].ProcessName) $($GetMEM[9].Id) $($GetMEM[9].WS)"
+                                    }
+
+$OutputLine | Export-Excel -Path "$($LogDir)\$($LogFile)" -WorksheetName "Metrics" -TableName "Metrics" -AutoSize -Append
+$OutputLine
