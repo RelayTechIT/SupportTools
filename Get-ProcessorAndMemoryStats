@@ -1,4 +1,14 @@
+$ErrorActionPreference  =   'Stop'
+$ProgressPreference     =   'SilentlyContinue'
+
 Write-Host "Running diagnostics - this may take up to a minute to finish..."
+try {
+    $CompanyID  =   Get-ItemPropertyValue -Path "HKLM:\SOFTWARE\ATERA Networks\AlphaAgent" -Name "CompanyId" -ea SilentlyContinue
+}
+catch {
+    $CompanyID = "UNK"
+}
+
 $GetComputerInfo    =   Get-ComputerInfo
 $GetProcess =   Get-Process
 $ProcessorLoad      =   "{0:P0}" -f ((Get-Counter '\Processor(_Total)\% Processor Time').CounterSamples[0].CookedValue * .01)
