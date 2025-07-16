@@ -46,6 +46,4 @@ $OutputLine     +=  [pscustomobject]@{
                                     MEM9                =   "$($GetMEM[8].ProcessName) $($GetMEM[8].Id) $($GetMEM[8].WS)"
                                     MEM10               =   "$($GetMEM[9].ProcessName) $($GetMEM[9].Id) $($GetMEM[9].WS)"
                                     }
-
-$OutputLine | Export-Excel -Path "$($LogDir)\$($LogFile)" -WorksheetName "Metrics" -TableName "Metrics" -AutoSize -Append
 $OutputLine
