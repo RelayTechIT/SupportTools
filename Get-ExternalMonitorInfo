@@ -1,0 +1,23 @@
+function Get-ExternalMonitorInfo {
+    $monitors = Get-CimInstance -Namespace root\wmi -ClassName WmiMonitorID
+
+    $results = @()
+    foreach ($monitor in $monitors) {
+        $manufacturer = ($monitor.ManufacturerName | ForEach-Object { [char]$_ }) -join ''
+        $productCode  = ($monitor.ProductCodeID    | ForEach-Object { [char]$_ }) -join ''
+        $serial       = ($monitor.SerialNumberID   | ForEach-Object { [char]$_ }) -join ''
+        $instanceName = $monitor.InstanceName
+
+        $results += [pscustomobject]@{
+            Instance     = $instanceName
+            Manufacturer = $manufacturer
+            Model        = $productCode
+            SerialNumber = $serial
+        }
+    }
+
+    return $results
+}
+
+# Run it
+Get-ExternalMonitorInfo | Format-Table -AutoSize
