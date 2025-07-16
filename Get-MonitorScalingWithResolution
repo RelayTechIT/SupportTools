@@ -1,0 +1,49 @@
+function Get-MonitorScalingWithResolution {
+    # Registry-based DPI (user-global)
+    $dpiValue = Get-ItemProperty -Path "HKCU:\Control Panel\Desktop" -Name "LogPixels" -ErrorAction SilentlyContinue
+    $dpi = if ($dpiValue) { $dpiValue.LogPixels } else { 96 }
+
+    $scaling = switch ($dpi) {
+        96  { "100%" }
+        120 { "125%" }
+        144 { "150%" }
+        192 { "200%" }
+        240 { "250%" }
+        288 { "300%" }
+        default { "$([math]::Round($dpi / 96 * 100))%" }
+    }
+
+    # Gather monitor metadata
+    $monitorInfo = Get-CimInstance -Namespace root\wmi -ClassName WmiMonitorID
+    $screens = [System.Windows.Forms.Screen]::AllScreens
+
+    $results = @()
+
+    for ($i = 0; $i -lt $screens.Count; $i++) {
+        $screen = $screens[$i]
+        $bounds = $screen.Bounds
+
+        $info = $monitorInfo[$i]  # Matching by index — most common approach for 1:1 layouts
+
+        $manufacturer = ($info.ManufacturerName | ForEach-Object { [char]$_ }) -join ''
+        $productCode  = ($info.ProductCodeID    | ForEach-Object { [char]$_ }) -join ''
+        $serial       = ($info.SerialNumberID   | ForEach-Object { [char]$_ }) -join ''
+
+        $results += [pscustomobject]@{
+            DeviceName    = $screen.DeviceName
+            Primary       = $screen.Primary
+            Resolution    = "$($bounds.Width)x$($bounds.Height)"
+            Position      = "($($bounds.X),$($bounds.Y))"
+            Manufacturer  = $manufacturer
+            ProductCode   = $productCode
+            SerialNumber  = $serial
+            DPI           = $dpi
+            Scaling       = $scaling
+        }
+    }
+
+    return $results
+}
+
+# Run it
+Get-MonitorScalingWithResolution | Format-Table -AutoSize
